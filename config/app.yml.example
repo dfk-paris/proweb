@@ -1,0 +1,20 @@
+db:
+  source:
+    adapter: "tinytds"
+    user: "john"
+    password: "secret"
+    host: "myhost.example.com"
+    database: "ProWeb"
+    encoding: "utf8"
+    timeout: 10000
+  target:
+    adapter: "sqlite"
+    database: "tmp/proweb.sqlite3"
+  clean: 
+    adapter: "sqlite3"
+    database: "tmp/proweb.sqlite3"
+project_ids: [16, 31, 36]
+files:
+  source: "/the/path/to/proweb/files"
+  intermediate: "../own_reality_files"
+  target: "../own_reality_link_tree"

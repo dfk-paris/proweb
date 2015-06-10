@@ -1,0 +1,207 @@
+#!/usr/bin/env ruby
+
+require "proweb"
+require 'httpclient'
+require 'oj'
+require 'byebug'
+
+to_date = Proc.new do |input|
+  input.present? ? input.gsub(/ [0\:]+$/, '') : nil
+end
+
+[16, 31].each do |project_id|
+  spreadsheet = [
+    [
+      "id",
+      "created_on", "created_by", "updated_on", "updated_by",
+      "issued_on", "from", "to",
+      'journal', 
+      'volume',
+      'issuer',
+      "category_D", 'category_F', 'category_GB',
+      "country_D", 'country_F', 'country_GB',
+      "city_D", 'city_F', 'city_GB',
+      "title_D", 'title_F', 'title_GB',
+      'content_D', 'content_F', 'content_GB',
+      'abstract_D', 'abstract_F', 'abstract_GB',
+      'interpretation_D', 'interpretation_F', 'interpretation_GB',
+      'authors',
+      'people',
+      'tags',
+      'files'
+    ]
+  ]
+
+  project = Proweb::Project.find(project_id)
+  puts "started with project #{project.name} (#{project.id})"
+
+  counter = 0
+  project.objects.each do |object|
+    puts "#{counter}/#{project.objects.count}" if counter % 100 == 0
+    counter += 1
+
+    result = {
+      :id => object.id,
+      :created_on => object.created_on,
+      :created_by => object.created_by,
+      :updated_on => object.updated_on,
+      :updated_by => object.updated_by,
+      :from => object.from_date,
+      :to => object.to_date,
+      :issued_on => object.issued_on,
+      :journal => {},
+      :volume => {},
+      :issuer => {},
+      :category => {},
+      :country => {},
+      :city => {},
+      :title => {},
+      :content => {},
+      :abstract => {},
+      :interpretation => {}
+    }
+
+    object.translations.each do |translation|
+      if translation.language_id == 4
+        p object
+      end
+
+      lang = translation.language.short_name
+      result[:title][lang] = translation.title
+      result[:content][lang] = translation.content
+      result[:abstract][lang] = translation.abstract
+      result[:interpretation][lang] = translation.interpretation
+    end
+
+    if object.journal
+      object.journal.translations.each do |translation|
+        lang = translation.language.short_name
+        result[:journal][lang] = translation.name
+        if translation.name.present?
+          result[:journal][:overlay] ||= translation.name
+        end
+      end
+    
+      if object.volume
+        object.volume.translations.each do |translation|
+          lang = translation.language.short_name
+          result[:volume][lang] = translation.name
+          if translation.name.present?
+            result[:volume][:overlay] ||= translation.name
+          end
+        end
+      end
+    end
+
+    if object.issuer
+      object.issuer.translations.each do |translation|
+        lang = translation.language.short_name
+        result[:issuer][lang] = translation.name
+        if translation.name.present?
+          result[:issuer][:overlay] ||= translation.name
+        end
+      end
+    end
+
+    if object.category
+      object.category.translations.each do |translation|
+        lang = translation.language.short_name
+        result[:category][lang] = translation.name
+        if translation.name.present?
+          result[:category][:overlay] ||= translation.name
+        end
+      end
+    end
+
+    if object.country
+      object.country.translations.each do |translation|
+        lang = translation.language.short_name
+        result[:country][lang] = translation.name
+        if translation.name.present?
+          result[:country][:overlay] ||= translation.name
+        end
+      end
+    end
+
+    if object.city
+      object.city.translations.each do |translation|
+        lang = translation.language.short_name
+        result[:city][lang] = translation.name
+        if translation.name.present?
+          result[:city][:overlay] ||= translation.name
+        end
+      end
+    end
+
+
+    # Find creators
+    result[:authors] = object.object_people.where(:kind_id => 12063).map do |op|
+      op.person.display_name
+    end
+
+    result[:people] = object.object_people.map do |op|
+      op.person.display_name
+    end
+
+    result[:tags] = object.tags.map do |tag|
+      translation = tag.translations.find{|t| t.name.present?}
+      translation ? translation.name : nil
+    end 
+
+    spreadsheet << [
+      result[:id],
+      {"value" => to_date.call(result[:created_on]), 'type' => 'string'},
+      result[:created_by],
+      {"value" => to_date.call(result[:updated_on]), 'type' => 'string'},
+      result[:updated_by],
+      {"value" => to_date.call(result[:issued_on]), 'type' => 'string'},
+      {'value' => to_date.call(result[:from]), 'type' => 'string'},
+      {'value' => to_date.call(result[:to]), 'type' => 'string'},
+      result[:journal][:overlay],
+      result[:volume][:overlay],
+      result[:issuer][:overlay],
+      result[:category]['D'], result[:category]['F'], result[:category]['GB'],
+      result[:country]['D'], result[:country]['F'], result[:country]['GB'],
+      result[:city]['D'], result[:city]['F'], result[:city]['GB'],
+      result[:title]['D'], result[:title]['F'], result[:title]['GB'],
+      result[:content]['D'], result[:content]['F'], result[:content]['GB'],
+      result[:abstract]['D'], result[:abstract]['F'], result[:abstract]['GB'],
+      result[:interpretation]['D'], result[:interpretation]['F'], result[:interpretation]['GB'],
+      result[:authors].join("\n"),
+      result[:people].join("\n"),
+      result[:tags].join("\n"),
+      object.files.join("\n")
+    ]
+  end
+
+  spreadsheet.each do |row|
+    row.each_with_index do |value, i|
+      if value == nil
+        row[i] = ""
+      end
+    end
+  end
+
+  payload = {
+    'sheets' => [
+      'name' => 'Sheet 1',
+      'rows' => spreadsheet
+    ]
+  }
+
+  # puts payload.to_yaml
+  # byebug
+
+  client = HTTPClient.new
+  body = Oj.dump(payload, :mode => :strict)
+  response = client.request "POST", "http://localhost:4000", nil, body, {
+    'accept' => 'application/vnd.ms-excel',
+    'content-type' => 'application/json'
+  }
+
+  byebug unless response.status == 200
+
+  File.open "/home/schepp/Desktop/spreadsheet.#{project_id}.xls", "wb" do |f|
+    f.write response.body
+  end
+end

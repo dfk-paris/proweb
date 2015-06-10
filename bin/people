@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require "proweb"
+
+results = {}
+
+Proweb::Project.where(:id => Proweb.config["project_ids"]).each do |project|
+  project.objects.includes(:people).each do |o|
+    o.people.each do |person|
+      results[person.id] ||= {"name" => person.display_name}
+      results[person.id][project.id] ||= 0
+      results[person.id][project.id] += 1
+    end
+  end
+end
+
+puts "id|name|" + Proweb.config["project_ids"].join('|')
+results.each do |id, r|
+  row = [id, r["name"]] + Proweb.config["project_ids"].map{|i| r[i]}
+  puts row.join('|')
+end

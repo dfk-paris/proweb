@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require "proweb"
+
+Proweb::Import.new(Proweb.source, Proweb.target).run

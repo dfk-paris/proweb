@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require "proweb"
+require 'httpclient'
+require 'oj'
+require 'byebug'
+
+if Proweb::AttributeTranslation.where(:language_id => 4).count > 0
+  puts "There should not be any attributes translated to 'neutral' [short_name=ALL], but there are"
+end
+
+Proweb::Project.where(:id => [16, 31]).each do |project|
+  project.objects.each do |o|
+    o.people.each do |person|
+      if person.last_name == "Neu"
+        puts "Person #{person.id} has 'Neu' as last name"
+      end
+    end
+  end
+end
+
+# Make sure no newlines are in attribute translations
+# Ensure "from" for every object within project 16
+# Ensure "from" or "to" for every object within project 31
+# Ensure résumé in fr and de
+# Ensure kategorization for all attributes within projects 16 and 31
+# Ensure GND for each person
+# Ensure category for all entries in chronology

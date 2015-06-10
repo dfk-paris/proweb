@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require "proweb"
+require 'httpclient'
+require 'oj'
+require 'byebug'
+
+Proweb::FileCleaner.new.run
