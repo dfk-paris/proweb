@@ -9,7 +9,9 @@ to_date = Proc.new do |input|
   input.present? ? input.gsub(/ [0\:]+$/, '') : nil
 end
 
-[16, 31].each do |project_id|
+Proweb.connect
+
+Proweb.config["project_ids"].each do |project_id|
   spreadsheet = [
     [
       "id",
@@ -19,6 +21,7 @@ end
       'volume',
       'issuer',
       "category_D", 'category_F', 'category_GB',
+      "kind_D", 'kind_F', 'kind_GB',
       "country_D", 'country_F', 'country_GB',
       "city_D", 'city_F', 'city_GB',
       "title_D", 'title_F', 'title_GB',
@@ -53,6 +56,7 @@ end
       :volume => {},
       :issuer => {},
       :category => {},
+      :kind => {},
       :country => {},
       :city => {},
       :title => {},
@@ -113,6 +117,16 @@ end
       end
     end
 
+    if object.kind
+      object.kind.translations.each do |translation|
+        lang = translation.language.short_name
+        result[:kind][lang] = translation.name
+        if translation.name.present?
+          result[:kind][:overlay] ||= translation.name
+        end
+      end
+    end
+
     if object.country
       object.country.translations.each do |translation|
         lang = translation.language.short_name
@@ -161,6 +175,7 @@ end
       result[:volume][:overlay],
       result[:issuer][:overlay],
       result[:category]['D'], result[:category]['F'], result[:category]['GB'],
+      result[:kind]['D'], result[:kind]['F'], result[:kind]['GB'],
       result[:country]['D'], result[:country]['F'], result[:country]['GB'],
       result[:city]['D'], result[:city]['F'], result[:city]['GB'],
       result[:title]['D'], result[:title]['F'], result[:title]['GB'],

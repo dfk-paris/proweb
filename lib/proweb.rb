@@ -70,5 +70,3 @@ module Proweb
   end
 
 end
-
-Proweb.connect if Proweb.config

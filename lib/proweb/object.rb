@@ -8,6 +8,7 @@ class Proweb::Object < ActiveRecord::Base
   belongs_to :volume, :class_name => '::Proweb::Attribute'
   belongs_to :issuer, :class_name => '::Proweb::Attribute'
   belongs_to :category, :class_name => '::Proweb::Attribute'
+  belongs_to :kind, :class_name => '::Proweb::Attribute', :foreign_key => :object_type_id
 
   has_many :object_attributes, :class_name => '::Proweb::ObjectAttribute'
   has_many :pw_attributes, :class_name => '::Proweb::Attribute', :through => :object_attributes
@@ -19,6 +20,29 @@ class Proweb::Object < ActiveRecord::Base
     class_name: '::Proweb::Person',
     through: :object_people,
     source: :person
+
+  def created_by
+    self[:created_by] || begin
+      mapping = {
+        "js" => "jsissia",
+        "cf" => "cfritzsch",
+        "mb" => "mbremer",
+        "ap" => "apanek",
+        "kk" => "kkosciuczuk"
+      }
+      key = comment ? comment.split(/[\n\r]+/).first.downcase : nil
+      mapping[key]
+    end
+  end
+
+  def people_by_role_ids
+    result = {}
+    object_people.includes(:person).each do |op|
+      result[op.kind_id] ||= []
+      result[op.kind_id] << op.person
+    end
+    result
+  end
 
   def country
     if oa = object_attributes.find{|a| a.kind_id == 168}

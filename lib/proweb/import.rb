@@ -69,7 +69,9 @@ class Proweb::Import
       'erstelltdurch_benutzerkurz' => {:name => 'created_by'},
       'letzteaenderung_am' => {:name => 'updated_on'},
       'letzteaenderung_benutzerkurz' => {:name => 'updated_by'},
-      'kategorieid' => {:name => "category_id", :type => Integer}
+      'kategorieid' => {:name => "category_id", :type => Integer},
+      'objekttypid' => {:name => "object_type_id", :type => Integer},
+      'bemerkung' => {:name => 'comment', :options => {:text => true}}
     }
 
     transfer 'tprojektattribut', 'projects_attributes', {
@@ -99,7 +101,8 @@ class Proweb::Import
       "anrede" => {:name => "title"},
       "vorname" => {:name => "first_name"},
       "nachname" => {:name => "last_name"},
-      "email" => {:name => "email"}
+      "email" => {:name => "email"},
+      "namensvarianten" => {:name => "variants"}
     }
 
     transfer 'tobjektperson', 'objects_people', {
