@@ -63,16 +63,12 @@ class Proweb::Object < ActiveRecord::Base
   end  
 
   def files
-    base_dir = "/home/schepp/Desktop/mws/projects/proweb/own_reality_link_tree"
+    base_dir = Proweb.config["files"]["target"]
     dir = "#{base_dir}/#{id}"
     return [] unless File.exists?(dir)
 
     real_dir = File.readlink(dir)
-    Dir["#{real_dir}/*"].reject{|f| f.match(/Zeige Objekt \d+\.lnk/)}.map do |f|
-      result = f
-      result.gsub! '/home/schepp/Desktop/mws/projects/proweb/own_reality_files', 'K:\ProWeb\Doks\Ownreality'
-      result.gsub '/', "\\"
-    end
+    Dir["#{real_dir}/*"].reject{|f| f.match(/Zeige Objekt \d+\.lnk/)}
   end
 
 end

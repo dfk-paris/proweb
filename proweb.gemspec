@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency "httpclient"
   s.add_dependency "oj"
   s.add_dependency "spreadsheet"
-  s.add_dependency "byebug"
+  s.add_dependency "pry"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

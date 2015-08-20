@@ -7,4 +7,8 @@ class Proweb::Attribute < ActiveRecord::Base
   has_many :object_attributes, :class_name => '::Proweb::ObjectAttribute'
   has_many :objects, :class_name => '::Proweb::Object', :through => :object_attributes
 
+  def name
+    translations.first.name
+  end
+
 end

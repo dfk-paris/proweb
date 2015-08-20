@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+
+require "proweb"
+
+Proweb.connect
+
+puts "PROJECTS"
+Proweb::Project.all.each do |project|
+  puts "#{project.id}: #{project.name} (#{project.objects.count} objects)"
+end
+puts "--------------------\n"
+
+puts "PEOPLE ROLES"
+ids = Proweb::ObjectPerson.group(:kind_id).count.keys
+Proweb::Attribute.where(:id => ids).each do |a|
+  puts "#{a.id}: #{a.name}"
+end
+puts "--------------------\n"
+
+puts "ATTRIBUTE KINDS AND KLASSES"
+Proweb::AttributeKlass.all.each do |klass|
+  puts "#{klass.id}: #{klass.name}"
+  klass.kinds.each do |kind|
+    puts "  #{kind.id}: #{kind.name} (#{kind.pw_attributes.count} attributes)"
+  end
+end
+puts "--------------------\n"

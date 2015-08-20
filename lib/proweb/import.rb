@@ -44,7 +44,12 @@ class Proweb::Import
 
     transfer 'tattributart', 'attribute_kinds', {
       'attributartid' => {:name => "id", :type => Integer, :options => {:primary_key => true}},
-      'attributartklasseid' => {:name => 'attribute_class_id', :type => Integer}
+      'attributartklasseid' => {:name => 'attribute_klass_id', :type => Integer}
+    }
+
+    transfer 'tattributartklasse', 'attribute_klasses', {
+      'tattributartklasse' => {:name => "id", :type => Integer, :options => {:primary_key => true}},
+      'attributartklasse' => {:name => "name", :type => String}
     }
 
     transfer 'tattributartsprache', 'attribute_kind_translations', {
