@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
   s.add_dependency "activerecord-sqlserver-adapter"
   s.add_dependency "activerecord"
   s.add_dependency "httpclient"
-  s.add_dependency "oj"
   s.add_dependency "spreadsheet"
   s.add_dependency "pry"
 

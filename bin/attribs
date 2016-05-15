@@ -4,6 +4,8 @@ require "proweb"
 
 project_ids = Proweb.config["project_ids"]
 
+Proweb.connect
+
 attribs = Proweb::Project.where(:id => project_ids).map do |project|
   project.pw_attributes.where(:attribute_kind_id => 43).all
 end.flatten.uniq

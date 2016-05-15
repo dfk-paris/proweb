@@ -3,7 +3,6 @@
 require "proweb"
 require 'httpclient'
 require 'oj'
-require 'byebug'
 
 to_date = Proc.new do |input|
   input.present? ? input.gsub(/ [0\:]+$/, '') : nil
@@ -160,7 +159,7 @@ Proweb.config["project_ids"].each do |project_id|
     result[:tags] = object.tags.map do |tag|
       translation = tag.translations.find{|t| t.name.present?}
       translation ? translation.name : nil
-    end 
+    end
 
     spreadsheet << [
       result[:id],
@@ -208,7 +207,7 @@ Proweb.config["project_ids"].each do |project_id|
   # byebug
 
   client = HTTPClient.new
-  body = Oj.dump(payload, :mode => :strict)
+  body = JSON.dump(payload, :mode => :strict)
   response = client.request "POST", "http://localhost:4000", nil, body, {
     'accept' => 'application/vnd.ms-excel',
     'content-type' => 'application/json'
@@ -216,7 +215,9 @@ Proweb.config["project_ids"].each do |project_id|
 
   byebug unless response.status == 200
 
-  File.open "/home/schepp/Desktop/spreadsheet.#{project_id}.xls", "wb" do |f|
+  project_short_name = project.name.downcase.gsub(/\s+/, '_')
+  ts = Time.now.strftime("%Y_%m_%d")
+  File.open "/home/schepp/Desktop/proweb.#{project_short_name}.#{ts}.xls", "wb" do |f|
     f.write response.body
   end
 end

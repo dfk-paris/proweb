@@ -4,12 +4,13 @@ PROWEB_ROOT = File.expand_path(File.dirname(__FILE__) + '/..')
 
 require "#{PROWEB_ROOT}/lib/patches"
 
-require "active_record"
-require "yaml"
-require "sequel"
-require "logger"
-require "pry"
-require "sqlite3"
+require 'active_record'
+require 'yaml'
+require 'pathname'
+require 'sequel'
+require 'logger'
+require 'pry'
+require 'sqlite3'
 
 $: << "#{PROWEB_ROOT}/lib"
 

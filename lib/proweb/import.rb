@@ -68,8 +68,8 @@ class Proweb::Import
       "datum_anfang" => {:name => "from_date"},
       "datum_ende" => {:name => "to_date"},
       "erscheinungsdatum" => {:name => "issued_on"},
-      "datumtag_nodisplay" => {:name => "ed_ignore_day", :type => TrueClass},
-      "datummonat_nodisplay" => {:name => "ed_ignore_month", :type => TrueClass},
+      "datumtag_nodisplay" => {:name => "ed_ignore_day", :type => TrueClass, :process => lambda{|v| v == -1} },
+      "datummonat_nodisplay" => {:name => "ed_ignore_month", :type => TrueClass, :process => lambda{|v| v == -1} },
       'erstelltam' => {:name => 'created_on'},
       'erstelltdurch_benutzerkurz' => {:name => 'created_by'},
       'letzteaenderung_am' => {:name => 'updated_on'},
@@ -142,7 +142,11 @@ class Proweb::Import
         target_record = []
 
         directives.each do |source_column_name, directive|
-          target_record << source_record[source_column_name.to_sym]
+          value = source_record[source_column_name.to_sym]
+          if directive[:process]
+            value = directive[:process].call(value)
+          end
+          target_record << value
         end
 
         values << target_record

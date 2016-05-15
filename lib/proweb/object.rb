@@ -71,4 +71,10 @@ class Proweb::Object < ActiveRecord::Base
     Dir["#{real_dir}/*"].reject{|f| f.match(/Zeige Objekt \d+\.lnk/)}
   end
 
+  def date_imprecision
+    return "month" if ed_ignore_month
+    return "day" if ed_ignore_day
+    false
+  end
+
 end

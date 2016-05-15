@@ -3,8 +3,8 @@ class Proweb::FileCleaner
   def initialize
     @project_ids = Proweb.config["project_ids"]
     @source_dirs = Proweb.config["files"]["sources"]
-    @intermediate_dir = File.expand_path(Proweb.config["files"]["intermediate"])
-    @dest_dir = File.expand_path(Proweb.config["files"]["target"])
+    @intermediate_dir = Pathname.new(Proweb.config["files"]["intermediate"]).realpath
+    @dest_dir = Pathname.new(Proweb.config["files"]["target"]).realpath
   end
 
   def run
