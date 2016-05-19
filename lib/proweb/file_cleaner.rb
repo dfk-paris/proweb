@@ -1,10 +1,11 @@
 class Proweb::FileCleaner
 
-  def initialize
+  def initialize(anomaly_facility = nil)
     @project_ids = Proweb.config["project_ids"]
     @source_dirs = Proweb.config["files"]["sources"]
     @intermediate_dir = Pathname.new(Proweb.config["files"]["intermediate"]).realpath
     @dest_dir = Pathname.new(Proweb.config["files"]["target"]).realpath
+    @anomaly_facility = anomaly_facility
   end
 
   def run
@@ -43,12 +44,18 @@ class Proweb::FileCleaner
         if File.directory?(dir)
           files = Dir["#{dir}/*"].reject{|f| f.match "Zeige Objekt "}
           if files.empty?
-            puts "ID: #{object.id}: NO FILES FOUND"
+            log "finding files for objects", "proweb-object", object.id, "no files found"
           end
         else
-          puts "ID: #{object.id}: NO FILES FOUND (no directory found)"
+          log "finding files for objects", "proweb-object", object.id, "files directory doesn't exist"
         end
       end
+    end
+  end
+
+  def log(task, type, object, message)
+    if @anomaly_facility
+      @anomaly_facility.log_anomaly task, type, object, message
     end
   end
 
