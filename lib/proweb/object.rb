@@ -22,17 +22,16 @@ class Proweb::Object < ActiveRecord::Base
     source: :person
 
   def created_by
-    self[:created_by] || begin
-      mapping = {
-        "js" => "jsissia",
-        "cf" => "cfritzsch",
-        "mb" => "mbremer",
-        "ap" => "apanek",
-        "kk" => "kkosciuczuk"
-      }
-      key = comment ? comment.split(/[\n\r]+/).first.downcase : nil
-      mapping[key]
-    end
+    mapping = {
+      "js" => "jsissia",
+      "cf" => "cfritzsch",
+      "mb" => "mbremer",
+      "ap" => "apanek",
+      "kk" => "kkosciuczuk"
+    }
+    key = (comment ? comment.split(/[\n\r]+/).first.downcase : nil)
+
+    mapping[key] || self[:created_by]
   end
 
   def people_by_role_ids
