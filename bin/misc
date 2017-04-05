@@ -25,3 +25,8 @@ Proweb::AttributeKlass.all.each do |klass|
   end
 end
 puts "--------------------\n"
+
+puts "LANGUAGES"
+Proweb::Language.all.each do |l|
+  puts "#{l.id}: #{l.name}"
+end

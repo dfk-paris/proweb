@@ -6,9 +6,14 @@ project_ids = Proweb.config["project_ids"]
 
 Proweb.connect
 
+acs = Proweb::AttributeCategories.new(
+  Proweb.config['files']['attribute_categories']
+)
+
 attribs = Proweb::Project.where(:id => project_ids).map do |project|
   project.pw_attributes.where(:attribute_kind_id => 43).all
 end.flatten.uniq
+
 
 headers = [
   "attribute_id",
@@ -17,7 +22,7 @@ headers = [
 
 headers += project_ids.map{|id| "usage_count_project_#{id}"}
 headers += [
-  "translation_1", "translation_2", "translation_3"
+  'category_1', 'translation_1', 'translation_2', 'translation_3'
 ]
 
 puts headers.join("|")
@@ -31,9 +36,10 @@ attribs.each do |a|
   names = a.translations.map{|t| t.name}
   names += [""] until names.size == 3
 
-  results = [a.id] + [a.objects.count] + project_ids.map{|id|
+  results = [a.id] + [a.objects.count]
+  results += project_ids.map{|id|
     a.objects.where(:project_id => id).count
   }
-  results += names
+  results += [acs.for_attribute_id(a.id)] + names
   puts results.join("|")
 end

@@ -11,12 +11,14 @@ require 'sequel'
 require 'logger'
 require 'pry'
 require 'sqlite3'
+require 'httpclient'
 
 $: << "#{PROWEB_ROOT}/lib"
 
 module Proweb
 
   autoload :ObjectAttribute, "proweb/object_attribute"
+  autoload :AttributeCategories, 'proweb/attribute_categories'
   autoload :AttributeKind, "proweb/attribute_kind"
   autoload :AttributeKindTranslation, "proweb/attribute_kind_translation"
   autoload :AttributeKlass, "proweb/attribute_klass"
@@ -69,6 +71,10 @@ module Proweb
 
   def self.target
     @target ||= Sequel.connect(config["db"]["target"])
+  end
+
+  def self.http_client
+    @http_client ||= HTTPClient.new
   end
 
 end

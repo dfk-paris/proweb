@@ -217,7 +217,7 @@ Proweb.config["project_ids"].each do |project_id|
 
   project_short_name = project.name.downcase.gsub(/\s+/, '_')
   ts = Time.now.strftime("%Y_%m_%d")
-  File.open "/home/schepp/Desktop/proweb.#{project_short_name}.#{ts}.xls", "wb" do |f|
+  File.open "#{ENV['TARGET']}/proweb.#{project_short_name}.#{ts}.xls", "wb" do |f|
     f.write response.body
   end
 end
