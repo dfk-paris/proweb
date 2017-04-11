@@ -11,10 +11,18 @@ end
 Proweb.connect
 
 Proweb.config["project_ids"].each do |project_id|
+  project = Proweb::Project.find(project_id)
+  project_short_name = project.name.downcase.gsub(/\s+/, '_')
+
+  old_data = "#{Proweb.config['files']['supplements']}/proweb.#{project_short_name}.xls"
+  reproducer = Proweb::OldDataMerger.new(
+    old_data, 'id', ['lang', 'tr_desc', 'tr_name', 'link', 'created_by']
+  )
+  
   spreadsheet = [
     [
       "id",
-      "created_on", "created_by", "updated_on", "updated_by",
+      "created_on", "updated_on", "updated_by",
       "issued_on", "from", "to",
       'journal', 
       'volume',
@@ -31,17 +39,13 @@ Proweb.config["project_ids"].each do |project_id|
       'people',
       'tags',
       'files'
-    ]
+    ] + reproducer.keys
   ]
 
-  project = Proweb::Project.find(project_id)
-  puts "started with project #{project.name} (#{project.id})"
-
-  counter = 0
+  progress = Proweb.progress_bar(
+    title: "project #{project.name} (#{project.id})", total: project.objects.count
+  )
   project.objects.each do |object|
-    puts "#{counter}/#{project.objects.count}" if counter % 100 == 0
-    counter += 1
-
     result = {
       :id => object.id,
       :created_on => object.created_on,
@@ -65,10 +69,6 @@ Proweb.config["project_ids"].each do |project_id|
     }
 
     object.translations.each do |translation|
-      if translation.language_id == 4
-        puts "object #{object.id} has translation language id 4"
-      end
-
       lang = translation.language.short_name
       result[:title][lang] = translation.title
       result[:content][lang] = translation.content
@@ -164,7 +164,6 @@ Proweb.config["project_ids"].each do |project_id|
     spreadsheet << [
       result[:id],
       {"value" => to_date.call(result[:created_on]), 'type' => 'string'},
-      result[:created_by],
       {"value" => to_date.call(result[:updated_on]), 'type' => 'string'},
       result[:updated_by],
       {"value" => to_date.call(result[:issued_on]), 'type' => 'string'},
@@ -185,7 +184,9 @@ Proweb.config["project_ids"].each do |project_id|
       result[:people].join("\n"),
       result[:tags].join("\n"),
       object.files.join("\n")
-    ]
+    ] + reproducer.values(object.id)
+
+    progress.increment
   end
 
   spreadsheet.each do |row|
@@ -215,7 +216,6 @@ Proweb.config["project_ids"].each do |project_id|
 
   byebug unless response.status == 200
 
-  project_short_name = project.name.downcase.gsub(/\s+/, '_')
   ts = Time.now.strftime("%Y_%m_%d")
   File.open "#{ENV['TARGET']}/proweb.#{project_short_name}.#{ts}.xls", "wb" do |f|
     f.write response.body

@@ -2,14 +2,13 @@ require 'spreadsheet'
 
 class Proweb::AttributeCategories
 
-  def initialize(url)
-    @url = url
+  def initialize
     parse
   end
 
   def parse
-    data = Proweb.http_client.get_content(@url)
-    book = ::Spreadsheet.open(StringIO.new(data))
+    path = "#{Proweb.config['files']['supplements']}/proweb.attributes.all_or_projects.xls"
+    book = ::Spreadsheet.open(path)
     @data = xls_to_hash(book.worksheets.first)
   end
 

@@ -6,8 +6,9 @@ project_ids = Proweb.config["project_ids"]
 
 Proweb.connect
 
-acs = Proweb::AttributeCategories.new(
-  Proweb.config['files']['attribute_categories']
+old_data = "#{Proweb.config['files']['supplements']}/proweb.attributes.all_or_projects.xls"
+reproducer = Proweb::OldDataMerger.new(
+  old_data, 'attribute_id', ['category_1']
 )
 
 attribs = Proweb::Project.where(:id => project_ids).map do |project|
@@ -21,8 +22,9 @@ headers = [
 ]
 
 headers += project_ids.map{|id| "usage_count_project_#{id}"}
+headers += reproducer.keys
 headers += [
-  'category_1', 'translation_1', 'translation_2', 'translation_3'
+  'translation_1', 'translation_2', 'translation_3'
 ]
 
 puts headers.join("|")
@@ -40,6 +42,6 @@ attribs.each do |a|
   results += project_ids.map{|id|
     a.objects.where(:project_id => id).count
   }
-  results += [acs.for_attribute_id(a.id)] + names
+  results += reproducer.values(a.id) + names
   puts results.join("|")
 end

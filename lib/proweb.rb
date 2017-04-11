@@ -35,6 +35,7 @@ module Proweb
   autoload :ProjectTranslation, "proweb/project_translation"
   autoload :ProjectAttribute, "proweb/project_attribute"
   autoload :Import, 'proweb/import'
+  autoload :OldDataMerger, 'proweb/old_data_merger'
 
   def self.root
     PROWEB_ROOT
@@ -75,6 +76,11 @@ module Proweb
 
   def self.http_client
     @http_client ||= HTTPClient.new
+  end
+
+  def self.progress_bar(options = {})
+    options.reverse_merge! :format => "%t |%B| %c/%C (+%R/s) | %a |%f"
+    ProgressBar.create options
   end
 
 end
