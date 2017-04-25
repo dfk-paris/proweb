@@ -2,8 +2,6 @@ require "proweb/version"
 
 PROWEB_ROOT = File.expand_path(File.dirname(__FILE__) + '/..')
 
-require "#{PROWEB_ROOT}/lib/patches"
-
 require 'active_record'
 require 'yaml'
 require 'pathname'
