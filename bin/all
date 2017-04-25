@@ -7,7 +7,7 @@ unless Proweb.http_client.request('GET', 'http://127.0.0.1:4000').status == 200
   raise 'spreader not started, please make sure its running'
 end
 
-ENV['TARGET'] ||= '/home/schepp/Desktop/pw_export'
+ENV['TARGET'] ||= Proweb.config['files']['export']
 system "mkdir -p #{ENV['TARGET']}"
 system "rm -f #{ENV['TARGET']}/*"
 
