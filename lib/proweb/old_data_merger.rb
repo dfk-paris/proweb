@@ -8,6 +8,7 @@ class Proweb::OldDataMerger
     @file = file
     @keys = keys
     @by_id = {}
+    @records = []
     
     parse if File.exists?(@file)
   end
@@ -19,7 +20,6 @@ class Proweb::OldDataMerger
   def parse
     book = ::Spreadsheet.open(@file)
 
-    @records = []
     book.worksheets.each do |sheet|
       progress = Proweb.progress_bar title: "parsing old data", total: sheet.rows.size
 

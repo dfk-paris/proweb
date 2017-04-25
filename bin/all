@@ -11,7 +11,7 @@ ENV['TARGET'] ||= '/home/schepp/Desktop/pw_export'
 system "mkdir -p #{ENV['TARGET']}"
 system "rm -f #{ENV['TARGET']}/*"
 
-# system 'bundle exec bin/import'
+system 'bundle exec bin/import'
 system 'bundle exec bin/entries'
 ts = Time.now.strftime('%Y_%m_%d')
 system "bundle exec bin/attribs > #{ENV['TARGET']}/proweb.attributes.all_or_projects.#{ts}.csv"
