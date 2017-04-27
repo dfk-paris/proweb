@@ -8,7 +8,7 @@ class Proweb::AttributeCategories
 
   def parse
     path = "#{Proweb.config['files']['supplements']}/proweb.attributes.all_or_projects.xls"
-    book = ::Spreadsheet.open(path)
+    book = ::Spreadsheet.open(path, 'rb')
     @data = xls_to_hash(book.worksheets.first)
   end
 
