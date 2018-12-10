@@ -18,7 +18,7 @@ class Proweb::OldDataMerger
   attr_reader :records
 
   def parse
-    book = ::Spreadsheet.open(@file)
+    book = ::Spreadsheet.open(@file, 'rb')
 
     book.worksheets.each do |sheet|
       progress = Proweb.progress_bar title: "parsing old data", total: sheet.rows.size
