@@ -19,7 +19,7 @@ class Proweb::FileCleaner
       puts "synchronizing #{source_dir}"
       ext = source_dir.split('/').last
       system "mkdir -p #{@intermediate_dir}/#{ext}"
-      system "rsync -av --delete #{source_dir}/ #{@intermediate_dir}/#{ext}/"
+      system "rsync -av --delete --modify-window=1 #{source_dir}/ #{@intermediate_dir}/#{ext}/"
     end
   end
 
