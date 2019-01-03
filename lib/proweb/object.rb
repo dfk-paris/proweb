@@ -1,5 +1,4 @@
 class Proweb::Object < ActiveRecord::Base
-
   belongs_to :project
 
   has_many :translations, :class_name => '::Proweb::ObjectTranslation'
@@ -20,6 +19,8 @@ class Proweb::Object < ActiveRecord::Base
     class_name: '::Proweb::Person',
     through: :object_people,
     source: :person
+
+  has_one :text, class_name: '::Proweb::ObjectText'
 
   def created_by
     mapping = {
@@ -75,5 +76,4 @@ class Proweb::Object < ActiveRecord::Base
     return "day" if ed_ignore_day
     false
   end
-
 end

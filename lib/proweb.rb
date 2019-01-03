@@ -29,6 +29,7 @@ module Proweb
   autoload :Language, "proweb/language"
   autoload :Person, "proweb/person"
   autoload :ObjectPerson, "proweb/object_person"
+  autoload :ObjectText, "proweb/object_text"
   autoload :ObjectTranslation, "proweb/object_translation"
   autoload :ProjectTranslation, "proweb/project_translation"
   autoload :ProjectAttribute, "proweb/project_attribute"

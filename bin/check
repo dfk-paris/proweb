@@ -2,8 +2,6 @@
 
 require "proweb"
 require 'httpclient'
-require 'oj'
-require 'byebug'
 
 Proweb.connect
 

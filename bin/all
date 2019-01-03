@@ -11,7 +11,10 @@ ENV['TARGET'] ||= Proweb.config['files']['export']
 system "mkdir -p #{ENV['TARGET']}"
 system "rm -f #{ENV['TARGET']}/*"
 
+# not scoped by selected projects
 system 'bundle exec bin/import'
+
 system 'bundle exec bin/entries'
+system "bundle exec bin/people > #{ENV['TARGET']}/people.csv"
 ts = Time.now.strftime('%Y_%m_%d')
 system "bundle exec bin/attribs > #{ENV['TARGET']}/proweb.attributes.all_or_projects.#{ts}.csv"

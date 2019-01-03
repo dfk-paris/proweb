@@ -76,7 +76,20 @@ class Proweb::Import
       'letzteaenderung_benutzerkurz' => {:name => 'updated_by'},
       'kategorieid' => {:name => "category_id", :type => Integer},
       'objekttypid' => {:name => "object_type_id", :type => Integer},
-      'bemerkung' => {:name => 'comment', :options => {:text => true}}
+      'bemerkung' => {:name => 'comment', :options => {:text => true}},
+      'zitat' => {name: 'citation', options: {text: true}},
+      'abschrift' => {name: 'transcription', options: {text: true}},
+    }
+
+    transfer 'tfti_objekt', 'object_texts', {
+      'pk' => {name: 'object_id', type: Integer},
+      'zitat_all' => {name: 'citation', options: {text: true}},
+      'bemerkung_all' => {name: 'comment', options: {text: true}},
+      'bemerkung_extern_all' => {name: 'comment_external', options: {text: true}},
+      'abschrift_all' => {name: 'transcription', options: {text: true}},
+      'aufunterbeischrift_all' => {name: 'additional', options: {text: true}},
+      'provenienz_all' => {name: 'provenience', options: {text: true}},
+      'abmessungenbreitehoehetiefe_all' => {name: 'dimensions', options: {text: true}}
     }
 
     transfer 'tprojektattribut', 'projects_attributes', {
