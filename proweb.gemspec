@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   "
   
   s.add_dependency "sequel"
-  s.add_dependency "sqlite3"
+  s.add_dependency "sqlite3", '1.3.13'
   s.add_dependency "mysql2"
   s.add_dependency "tiny_tds"
   s.add_dependency "activerecord-sqlserver-adapter"
@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency "httpclient"
   s.add_dependency "spreadsheet"
   s.add_dependency "pry"
-  s.add_dependency 'ruby-progressbar'
+  s.add_dependency 'progressbar'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

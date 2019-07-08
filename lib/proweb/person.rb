@@ -1,5 +1,5 @@
 class Proweb::Person < ActiveRecord::Base
-  has_many :objects_people, :class_name => "::Proweb::ObjectPerson", :foreign_key => "object_id"
+  has_many :objects_people, :class_name => "::Proweb::ObjectPerson", :foreign_key => "person_id"
   has_many :objects, :through => :objects_people
 
   def first_name

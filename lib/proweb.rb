@@ -10,6 +10,7 @@ require 'logger'
 require 'pry'
 require 'sqlite3'
 require 'httpclient'
+require 'progressbar'
 
 $: << "#{PROWEB_ROOT}/lib"
 
@@ -53,6 +54,7 @@ module Proweb
   end
 
   def self.establish_connection
+    require 'sqlite3'
     ActiveRecord::Base.establish_connection(config["db"]["clean"])
   end
 

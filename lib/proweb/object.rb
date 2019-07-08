@@ -9,6 +9,18 @@ class Proweb::Object < ActiveRecord::Base
   belongs_to :category, :class_name => '::Proweb::Attribute'
   belongs_to :kind, :class_name => '::Proweb::Attribute', :foreign_key => :object_type_id
 
+  belongs_to :rubric, class_name: '::Proweb::Attribute'
+  belongs_to :location, class_name: '::Proweb::Attribute'
+  belongs_to :material, class_name: '::Proweb::Attribute'
+  belongs_to :technique, class_name: '::Proweb::Attribute'
+  belongs_to :editor, class_name: '::Proweb::Attribute'
+  belongs_to :site1, class_name: '::Proweb::Attribute'
+  belongs_to :site2, class_name: '::Proweb::Attribute'
+  belongs_to :origin, class_name: '::Proweb::Attribute'
+  belongs_to :content_context, class_name: '::Proweb::Attribute'
+  belongs_to :content_region, class_name: '::Proweb::Attribute'
+  belongs_to :content_location, class_name: '::Proweb::Attribute'
+
   has_many :object_attributes, :class_name => '::Proweb::ObjectAttribute'
   has_many :pw_attributes, :class_name => '::Proweb::Attribute', :through => :object_attributes
 
@@ -40,6 +52,25 @@ class Proweb::Object < ActiveRecord::Base
     object_people.includes(:person).each do |op|
       result[op.kind_id] ||= []
       result[op.kind_id] << op.person
+    end
+    result
+  end
+
+  def people_ids_by_role_ids
+    result = {}
+    object_people.includes(:person).each do |op|
+      result[op.kind_id] ||= []
+      result[op.kind_id] << op.person_id
+    end
+    result
+  end
+
+  def attribute_ids_by_type_ids
+    result = {}
+    pw_attributes.includes(:kind).each do |a|
+      result[a.kind.attribute_klass_id] ||= {}
+      result[a.kind.attribute_klass_id][a.kind.id] ||= []
+      result[a.kind.attribute_klass_id][a.kind.id] << a.id
     end
     result
   end
