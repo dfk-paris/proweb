@@ -1,7 +1,7 @@
 # Proweb
 
 This is a collection of scripts to export data from the legacy database system
-"proweb" at the DFK Paris. The scripts will only be useful until the database
+“proweb” at the DFK Paris. The scripts will only be useful until the database
 system has been decommissioned.
 
 ## Usage
