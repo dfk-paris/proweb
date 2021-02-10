@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "mysql2"
   s.add_dependency "tiny_tds"
   s.add_dependency "activerecord-sqlserver-adapter"
-  s.add_dependency "activerecord", "~> 4.2"
+  s.add_dependency "activerecord", "~> 6.1.1"
   s.add_dependency "httpclient"
   s.add_dependency "spreadsheet"
   s.add_dependency "pry"
